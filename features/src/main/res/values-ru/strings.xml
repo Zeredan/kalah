@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile">Профиль</string>
+
+    <string name="not_registrated">Вы не зарегистрированы</string>
+    <string name="statistics">Статистика</string>
+    <string name="wins_vs_human">Победы против человека</string>
+    <string name="wins_vs_bot">Победы против компьютера</string>
+    <string name="easy">легкий</string>
+    <string name="medium">средний</string>
+    <string name="hard">сложный</string>
+
+    <string name="log_in">Войти</string>
+    <string name="log_out">Выйти</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+
+    <string name="language">Выбери язык</string>
+
+    <string name="russian">Русский</string>
+    <string name="english">Английский</string>
+    <string name="spanish">Испанский</string>
+    <string name="portuguese">Португальский</string>
+
+    <string name="settings">Настройки</string>
+
+    <string name="dark_mode">Темная тема</string>
+    <string name="privacy_policy">Политика приватности</string>
+    <string name="rate_us">Оценить нас</string>
+    <string name="game_theme">Игровая тема</string>
+
+    <string name="kalah">Калах</string>
+    <string name="play_vs_human">Играть против человека</string>
+    <string name="play_vs_bot">Играть против компьютера</string>
+    <string name="difficulty">Сложность</string>
+    <string name="stones">Количество камней</string>
+    <string name="holes">Количество лунок</string>
+    <string name="victory">ПОБЕДА</string>
+    <string name="defeat">ПОРАЖЕНИЕ</string>
+    <string name="draw">НИЧЬЯ</string>
+    <string name="back">Назад</string>
+
+    <string name="lobbies">Список Лобби</string>
+    <string name="creation_lobby">Создание Лобби</string>
+    <string name="lobby">Лобби</string>
+    <string name="create">Создать</string>
+    <string name="start_game">Начать игру</string>
+    <string name="waiting">Ожидаем соперника</string>
+    <string name="go_out">Выйти</string>
+    <string name="name">Название</string>
+    <string name="players">Игроки</string>
+    <string name="me">Я</string>
+</resources>
