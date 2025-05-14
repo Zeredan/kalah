@@ -51,6 +51,7 @@ dependencies {
     implementation(project(":features:lobby_management"))
     implementation(project(":features:"))
     implementation(project(":data:settings"))
+    implementation(project(":data:networking_core"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

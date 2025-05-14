@@ -41,6 +41,7 @@ android {
 dependencies {
     implementation(project(":data:kalah_game"))
     implementation(project(":data:user"))
+    implementation(project(":data:settings"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

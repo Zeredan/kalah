@@ -8,11 +8,14 @@ import dagger.multibindings.IntoSet
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 
 object KtorNetworkSettings{
-    var networkingUrl: String = "qwer"
+    var networkingUrl: String = ""
 }
 
 fun createHttpClient(engine: HttpClientEngine) : HttpClient {

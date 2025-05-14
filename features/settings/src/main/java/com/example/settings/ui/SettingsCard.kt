@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.settings.ui.theme.ColorScheme
 import com.example.settings.ui.theme.IconScheme
@@ -20,6 +21,7 @@ import com.example.settings.ui.theme.IconScheme
 fun SettingCard(
     modifier: Modifier = Modifier,
     isDarkMode: Boolean,
+    size: Dp = 56.dp,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
@@ -27,7 +29,7 @@ fun SettingCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(size)
             .clip(RoundedCornerShape(16.dp))
             .run{
                 if (onClick != null) clickable(onClick = onClick) else this

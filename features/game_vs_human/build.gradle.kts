@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation(project(":data:user"))
+    implementation(project(":data:settings"))
     implementation(project(":data:kalah_game"))
     implementation(project(":features"))
 

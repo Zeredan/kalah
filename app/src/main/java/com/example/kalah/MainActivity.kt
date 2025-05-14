@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import com.example.kalah.domain.AppViewModel
+import com.example.networking_core.ktor.di.KtorNetworkSettings
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,6 +51,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        lifecycleScope.launch {
+            settingsRepository.getSavedBaseURIAsFlow().collect{
+                KtorNetworkSettings.networkingUrl = it
+            }
+        }
         setContent {
             val vm: AppViewModel = hiltViewModel()
             val settingsDarkMode by vm.darkModeStateFlow.collectAsState()

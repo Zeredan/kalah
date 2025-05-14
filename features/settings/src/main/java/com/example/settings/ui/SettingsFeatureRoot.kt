@@ -14,15 +14,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,7 +42,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -70,6 +76,7 @@ fun SettingsFeatureRoot(
 
     val selectedLanguage by vm.selectedLanguageStateFlow.collectAsState()
     val selectedGameTheme by vm.selectedGameTheme.collectAsState()
+    val savedBaseURI by vm.savedBaseUriStateFlow.collectAsState()
 
     val context = LocalContext.current
 
@@ -108,6 +115,52 @@ fun SettingsFeatureRoot(
                     .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                var savedBaseUri by remember(savedBaseURI) { mutableStateOf(savedBaseURI) }
+                SettingCard(
+                    isDarkMode = isDarkMode,
+                    size = 120.dp
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .size(20.dp),
+                        painter = painterResource(iconScheme.langIcon),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = "BASE URI: ",
+                        fontSize = 14.sp,
+                        color = colorResource(colorScheme.textColor),
+                        fontWeight = FontWeight.W600
+                    )
+                    Spacer(Modifier.weight(1f))
+                    TextField(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .weight(2f),
+                        value = savedBaseUri,
+                        onValueChange = {
+                            savedBaseUri = it
+                            vm.updateSavedBaseUri(it)
+                        },
+                        label = {
+                            Text(
+                                text = "URI",
+                                fontSize = 18.sp,
+                                color = colorResource(colorScheme.textColor),
+                                fontWeight = FontWeight.W600,
+                            )
+                        },
+                        colors = TextFieldDefaults.colors(
+                            focusedTextColor = colorResource(colorScheme.textColor),
+                            unfocusedTextColor = colorResource(colorScheme.textColor),
+                            focusedContainerColor = colorResource(colorScheme.backgroundColor),
+                            unfocusedContainerColor = colorResource(colorScheme.backgroundColor),
+                            focusedLabelColor = Color.Transparent,
+                            unfocusedLabelColor = Color.Transparent
+                        )
+                    )
+                }
                 SettingCard(
                     isDarkMode = isDarkMode,
                     onClick = {

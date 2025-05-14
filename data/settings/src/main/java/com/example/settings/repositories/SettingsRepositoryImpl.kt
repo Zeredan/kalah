@@ -17,6 +17,7 @@ class SettingsRepositoryImpl @Inject constructor(
     private val DARK_MODE_KEY = booleanPreferencesKey("dark_mode")
     private val ONBOARDING = booleanPreferencesKey("onboarding")
     private val GAME_THEME_KEY = stringPreferencesKey("game_theme")
+    private val BASE_URI_KEY = stringPreferencesKey("base_uri")
 
     override fun getSelectedLanguageAsFlow(): Flow<String?> {
         return dataStore.data.map {
@@ -63,6 +64,18 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun updateGameTheme(theme: String) {
         dataStore.edit {
             it[GAME_THEME_KEY] = theme
+        }
+    }
+
+    override fun getSavedBaseURIAsFlow(): Flow<String> {
+        return dataStore.data.map{
+            it[BASE_URI_KEY] ?: ""
+        }
+    }
+
+    override suspend fun updateSavedBaseURI(uri: String) {
+        dataStore.edit {
+            it[BASE_URI_KEY] = uri
         }
     }
 }

@@ -16,4 +16,7 @@ interface SettingsRepository {
 
     fun getGameThemeAsFlow(): Flow<String>
     suspend fun updateGameTheme(theme: String)
+
+    fun getSavedBaseURIAsFlow(): Flow<String>
+    suspend fun updateSavedBaseURI(theme: String)
 }

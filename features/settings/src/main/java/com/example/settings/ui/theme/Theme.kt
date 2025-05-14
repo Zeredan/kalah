@@ -25,6 +25,7 @@ enum class ColorScheme(
 
 enum class IconScheme(
     val backIcon: Int,
+    val connIcon: Int,
     val langIcon: Int,
     val darkModeIcon: Int,
     val privacyPolicyIcon: Int,
@@ -33,6 +34,7 @@ enum class IconScheme(
     val themeIcon: Int,
 ) {
     DarkScheme(
+        connIcon = com.example.features.R.drawable.connection,
         backIcon = com.example.features.R.drawable.back_icon_white,
         langIcon = com.example.features.R.drawable.lang_icon_white,
         darkModeIcon = com.example.features.R.drawable.dark_mode_icon_white,
@@ -42,6 +44,7 @@ enum class IconScheme(
         themeIcon = com.example.features.R.drawable.beach_white
     ),
     LightScheme(
+        connIcon = com.example.features.R.drawable.connection,
         backIcon = com.example.features.R.drawable.back_icon_black,
         langIcon = com.example.features.R.drawable.lang_icon_black,
         darkModeIcon = com.example.features.R.drawable.dark_mode_icon_black,

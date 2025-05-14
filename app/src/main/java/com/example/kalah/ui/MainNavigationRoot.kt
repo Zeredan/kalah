@@ -1,6 +1,7 @@
 package com.example.kalah.ui
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,6 +27,8 @@ import com.example.play.ui.PlayFeatureRoot
 import com.example.profile.domain.ProfileViewModel
 import com.example.profile.ui.ProfileFeatureRoot
 import com.example.settings.ui.SettingsFeatureRoot
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @SuppressLint("NewApi")
 @Composable
@@ -97,9 +100,15 @@ fun MainNavigationRoot(
                             }
                         },
                         onPlayWithHuman = {
-                            navController.navigate(ScreenState.LOBBY_MANAGEMENT) {
-                                popUpTo(ScreenState.PLAY) {
-                                    inclusive = false
+                            coroutineScope.launch {
+                                profileViewModel.myProfileSavedUser.first()?.let {
+                                    navController.navigate(ScreenState.LOBBY_MANAGEMENT) {
+                                        popUpTo(ScreenState.PLAY) {
+                                            inclusive = false
+                                        }
+                                    }
+                                } ?: 0.let{
+                                    Toast.makeText(navController.context, "Please sign in first", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }

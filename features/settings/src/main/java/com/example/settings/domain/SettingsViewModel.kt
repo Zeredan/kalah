@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.networking_core.ktor.di.KtorNetworkSettings
 import com.example.settings.model.GameTheme
 import com.example.settings.repositories.SettingsRepository
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -22,6 +23,9 @@ class SettingsViewModel @Inject constructor(
 ): ViewModel() {
     val selectedLanguageStateFlow = settingsRepository.getSelectedLanguageAsFlow()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    
+    val savedBaseUriStateFlow = settingsRepository.getSavedBaseURIAsFlow()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     val selectedGameTheme = settingsRepository.getGameThemeAsFlow()
         .stateIn(viewModelScope, SharingStarted.Eagerly, GameTheme.SAND)
@@ -29,6 +33,11 @@ class SettingsViewModel @Inject constructor(
     fun updateDarkMode(value: Boolean){
         viewModelScope.launch {
             settingsRepository.updateDarkModeEnabled(value)
+        }
+    }
+    fun updateSavedBaseUri(uri: String) {
+        viewModelScope.launch {
+            settingsRepository.updateSavedBaseURI(uri)
         }
     }
     fun updateGameTheme(value: String){

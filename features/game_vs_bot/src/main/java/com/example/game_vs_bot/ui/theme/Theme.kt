@@ -11,13 +11,13 @@ enum class ColorScheme(
     DarkScheme(
         textColor = com.example.features.R.color.white,
         backgroundColor = com.example.features.R.color.black1,
-        holeBackgroundColor = com.example.features.R.color.gray1,
+        holeBackgroundColor = com.example.features.R.color.orange1,
         deckBackgroundColor = com.example.features.R.color.black1
     ),
     LightScheme(
         textColor = com.example.features.R.color.black,
         backgroundColor = com.example.features.R.color.white1,
-        holeBackgroundColor = com.example.features.R.color.gray2,
+        holeBackgroundColor = com.example.features.R.color.orange1,
         deckBackgroundColor = com.example.features.R.color.white_transparent
     )
 }

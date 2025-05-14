@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kalah_game.model.KalahGameState
 import com.example.kalah_game.repositories.KalahGameRemoteRepository
+import com.example.settings.repositories.SettingsRepository
 import com.example.user.repositories.UserLocalRepository
 import com.example.user.repositories.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +22,13 @@ import javax.inject.Inject
 class GameVsHumanViewModel @Inject constructor(
     private val userRemoteRepository: UserRemoteRepository,
     private val userLocalRepository: UserLocalRepository,
-    private val kalahGameRemoteRepository: KalahGameRemoteRepository
+    private val kalahGameRemoteRepository: KalahGameRemoteRepository,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
+
+    val selectedGameTheme = settingsRepository.getGameThemeAsFlow()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     var gameId by mutableStateOf(0)
     private var isInitialized = false
     val kalahGameState = MutableStateFlow<KalahGameState?>(null)

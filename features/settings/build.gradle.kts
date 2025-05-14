@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation(project(":data:settings"))
+    implementation(project(":data:networking_core"))
     implementation(project(":features"))
 
     implementation(libs.androidx.core.ktx)

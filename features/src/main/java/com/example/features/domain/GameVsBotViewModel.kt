@@ -5,12 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.example.kalah_game.model.KalahGameState
+import com.example.settings.model.GameTheme
+import com.example.settings.repositories.SettingsRepository
 import com.example.user.repositories.UserLocalRepository
 import com.example.user.repositories.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,10 +23,14 @@ import javax.inject.Inject
 class GameVsBotViewModel @Inject constructor(
     private val userRemoteRepository: UserRemoteRepository,
     private val userLocalRepository: UserLocalRepository,
+    private val settingsRepository: SettingsRepository,
 ): PlayViewModel() {
     val kalahGameState = MutableStateFlow<KalahGameState?>(null)
     val currentPlayer = MutableStateFlow(1)
     var isMakingMove by mutableStateOf(false)
+
+    val selectedGameTheme = settingsRepository.getGameThemeAsFlow()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun startGame() {
         if (kalahGameState.value == null) {

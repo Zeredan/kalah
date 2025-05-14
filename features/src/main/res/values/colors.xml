@@ -22,4 +22,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="teal_900">#FF154746</color>
     <color name="orange">#F47A10</color>
+    <color name="orange1">#A17110</color>
+    <color name="red">#A11110</color>
 </resources>
