@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.flowOf
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.statement.bodyAsText
 import javax.inject.Inject
@@ -56,7 +57,7 @@ class KtorService @Inject constructor(
                 urlString = "${KtorNetworkSettings.networkingUrl}/users"
             ) {
                 method = HttpMethod.Get
-            }.bodyAsText().let{gson.fromJson(it, List::class.java)} as List<UserDTO>
+            }.bodyAsText().let{gson.fromJson(it, object : TypeToken<List<UserDTO>>(){}.type)}
         } catch (e: Exception) {
             println("NETWORK: Error getting all users - ${e.message}")
             emptyList()
@@ -71,7 +72,7 @@ class KtorService @Inject constructor(
             ) {
                 method = HttpMethod.Get
                 parameter("filter", filter)
-            }.bodyAsText().let{gson.fromJson(it, List::class.java)} as List<UserDTO>
+            }.bodyAsText().let{gson.fromJson(it, object : TypeToken<List<UserDTO>>(){}.type)}
         } catch (e: Exception) {
             println("NETWORK: Error filtering users - ${e.message}")
             emptyList()
@@ -125,7 +126,7 @@ class KtorService @Inject constructor(
                 urlString = "${KtorNetworkSettings.networkingUrl}/lobbies"
             ) {
                 method = HttpMethod.Get
-            }.bodyAsText().let{gson.fromJson(it, List::class.java)} as List<LobbyDTO>
+            }.bodyAsText().let{gson.fromJson(it, object : TypeToken<List<LobbyDTO>>(){}.type)}
         } catch (e: Exception) {
             println("NETWORK: Error getting all lobbies - ${e.message}")
             emptyList()
