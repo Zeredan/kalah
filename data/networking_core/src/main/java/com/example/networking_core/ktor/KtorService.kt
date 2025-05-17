@@ -19,11 +19,13 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.flowOf
 import com.google.gson.Gson
+import io.ktor.client.statement.bodyAsText
 import javax.inject.Inject
 
 class KtorService @Inject constructor(
     private val client: HttpClient
 ) {
+    val gson = Gson()
     suspend fun getUserByCredentials(login: String, password: String) : UserDTO? {
         println("NETWORK: Getting user by credentials - login: $login")
         return try {
@@ -33,7 +35,7 @@ class KtorService @Inject constructor(
                 method = HttpMethod.Get
                 parameter("login", login)
                 parameter("password", password)
-            }.body()
+            }.bodyAsText().let{gson.fromJson(it, UserDTO::class.java)}
         } catch (e: Exception) {
             println("NETWORK: Error getting user by credentials - ${e.message}")
             null
@@ -47,7 +49,7 @@ class KtorService @Inject constructor(
                 urlString = "${KtorNetworkSettings.networkingUrl}/users"
             ) {
                 method = HttpMethod.Get
-            }.body()
+            }.bodyAsText().let{gson.fromJson(it, List::class.java)} as List<UserDTO>
         } catch (e: Exception) {
             println("NETWORK: Error getting all users - ${e.message}")
             emptyList()
@@ -62,7 +64,7 @@ class KtorService @Inject constructor(
             ) {
                 method = HttpMethod.Get
                 parameter("filter", filter)
-            }.body()
+            }.bodyAsText().let{gson.fromJson(it, List::class.java)} as List<UserDTO>
         } catch (e: Exception) {
             println("NETWORK: Error filtering users - ${e.message}")
             emptyList()
@@ -113,7 +115,7 @@ class KtorService @Inject constructor(
                 urlString = "${KtorNetworkSettings.networkingUrl}/lobbies"
             ) {
                 method = HttpMethod.Get
-            }.body()
+            }.bodyAsText().let{gson.fromJson(it, List::class.java)} as List<LobbyDTO>
         } catch (e: Exception) {
             println("NETWORK: Error getting all lobbies - ${e.message}")
             emptyList()
@@ -128,7 +130,7 @@ class KtorService @Inject constructor(
             ) {
                 method = HttpMethod.Post
                 setBody(lobbyDTO)
-            }.body()
+            }.bodyAsText().let{gson.fromJson(it, LobbyDTO::class.java)}
         } catch (e: Exception) {
             println("NETWORK: Error creating lobby - ${e.message}")
             null
@@ -143,7 +145,7 @@ class KtorService @Inject constructor(
             ) {
                 method = HttpMethod.Post
                 setBody(userDTO)
-            }.body()
+            }.bodyAsText().let{gson.fromJson(it, LobbyDTO::class.java)}
         } catch (e: Exception) {
             println("NETWORK: Error joining lobby - ${e.message}")
             null

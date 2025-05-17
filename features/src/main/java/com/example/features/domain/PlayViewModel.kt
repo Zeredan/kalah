@@ -28,7 +28,7 @@ open class PlayViewModel @Inject constructor(
     }
     fun updateHolesCount(newCount: Int) {
         viewModelScope.launch {
-            if (newCount in 1..10) {
+            if (newCount in 3..8) {
                 _holesCount.emit(newCount)
             }
         }
