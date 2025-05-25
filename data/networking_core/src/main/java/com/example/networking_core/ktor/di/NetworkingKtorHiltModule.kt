@@ -8,10 +8,16 @@ import dagger.multibindings.IntoSet
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.websocket.WebSocketSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.WebSocket
 import okhttp3.logging.HttpLoggingInterceptor
 
 object KtorNetworkSettings{
@@ -20,17 +26,17 @@ object KtorNetworkSettings{
 
 fun createHttpClient(engine: HttpClientEngine) : HttpClient {
     return HttpClient(engine) {
+        install(WebSockets){
 
-//        install(Logging){
-//            level = LogLevel.ALL
-//        }
-//        install(ContentNegotiation){
-//            json(
-//                json = Json{
-//                    ignoreUnknownKeys = true
-//                }
-//            )
-//        }
+        }
+        install(ContentNegotiation){
+            json(
+                json = Json{
+                    ignoreUnknownKeys = true
+                    this.explicitNulls = true
+                }
+            )
+        }
     }
 }
 

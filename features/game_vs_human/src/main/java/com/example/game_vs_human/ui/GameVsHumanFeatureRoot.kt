@@ -27,6 +27,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -80,25 +81,28 @@ fun GameVsHumanFeatureRoot(
     val gameTheme by vm.selectedGameTheme.collectAsState()
     val kalahGameStateTrue by vm.kalahGameState.collectAsState()
     val currentUserMe by vm.currentUserMe.collectAsState()
-    
-    val kalahGameState = kalahGameStateTrue?.let { gameState ->
-        if (currentUserMe?.nickname == gameState.player1Nickname) {
-            gameState
-        } else {
-            gameState.copy(
-                player1Nickname = gameState.player2Nickname,
-                player2Nickname = gameState.player1Nickname,
-                player1Kalah = gameState.player2Kalah,
-                player2Kalah = gameState.player1Kalah,
-                player1Holes = gameState.player2Holes,
-                player2Holes = gameState.player1Holes,
-                currentPlayerInd = if (gameState.currentPlayerInd == 1) 2 else 1,
-                currentGameStatus = when (gameState.currentGameStatus) {
-                    GameStatus.PLAYER1_WIN -> GameStatus.PLAYER2_WIN
-                    GameStatus.PLAYER2_WIN -> GameStatus.PLAYER1_WIN
-                    else -> gameState.currentGameStatus
-                }
-            )
+
+    val shouldRevert = currentUserMe?.nickname == kalahGameStateTrue?.player2Nickname
+    val kalahGameState = remember(kalahGameStateTrue) {
+        kalahGameStateTrue?.let { gameState ->
+            if (!shouldRevert) {
+                gameState
+            } else {
+                gameState.copy(
+                    player1Nickname = gameState.player2Nickname,
+                    player2Nickname = gameState.player1Nickname,
+                    player1Kalah = gameState.player2Kalah,
+                    player2Kalah = gameState.player1Kalah,
+                    player1Holes = gameState.player2Holes.reversed().toMutableList(),
+                    player2Holes = gameState.player1Holes.reversed().toMutableList(),
+                    currentPlayerInd = if (gameState.currentPlayerInd == 1) 2 else 1,
+                    currentGameStatus = when (gameState.currentGameStatus) {
+                        GameStatus.PLAYER1_WIN -> GameStatus.PLAYER2_WIN
+                        GameStatus.PLAYER2_WIN -> GameStatus.PLAYER1_WIN
+                        else -> gameState.currentGameStatus
+                    }
+                )
+            }
         }
     }
     Box(
@@ -162,7 +166,7 @@ fun GameVsHumanFeatureRoot(
                     fontWeight = FontWeight.W600
                 )
             }
-            if (kalahGameState?.currentGameStatus != null && kalahGameState?.currentGameStatus != GameStatus.PLAYING) {
+            if (kalahGameState?.currentGameStatus != null && kalahGameState.currentGameStatus != GameStatus.PLAYING) {
                 Dialog(
                     onDismissRequest = {
 
@@ -291,7 +295,7 @@ fun GameVsHumanFeatureRoot(
                                                 color = colorResource(R.color.green),
                                                 shape = RoundedCornerShape(16.dp)
                                             ).clickable {
-                                                vm.makeMove(ind)
+                                                vm.makeMove(if (!shouldRevert) ind else (kalahGameState.player1Holes.size - ind - 1))
                                             }
                                         } else this
                                     },

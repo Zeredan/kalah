@@ -121,7 +121,7 @@ fun MainNavigationRoot(
                             navController.navigateUp()
                         },
                         onGameStarted = {
-                            navController.navigate("${ScreenState.GAME_VS_HUMAN}/${it}") {
+                            navController.navigate("${ScreenState.GAME_VS_HUMAN}/$it") {
                                 popUpTo(ScreenState.LOBBY_MANAGEMENT) {
                                     inclusive = true
                                 }
@@ -130,7 +130,8 @@ fun MainNavigationRoot(
                     )
                 }
                 composable("${ScreenState.GAME_VS_HUMAN}/{gameId}") {
-                    val gameId = it.arguments?.getInt("gameId") ?: 0
+                    val gameId = it.arguments?.getString("gameId")?.toIntOrNull() ?: 0
+                    println("gameeeee: gameId: $gameId")
 
                     GameVsHumanFeatureRoot(
                         isDarkMode = isDarkMode,

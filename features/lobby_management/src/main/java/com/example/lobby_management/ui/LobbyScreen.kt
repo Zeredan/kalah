@@ -100,19 +100,51 @@ fun LobbyScreen(
                 modifier = Modifier
                     .padding(start = 16.dp)
             ) {
-                Text(
-                    text = l.creator.nickname,
-                    fontSize = 22.sp,
-                    color = colorResource(colorScheme.textColor),
-                    fontWeight = FontWeight.W500
-                )
-                l.guest?.let {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
                     Text(
-                        text = it.nickname,
+                        text = if (isCreator == true) {
+                            "${l.creator.nickname} (${stringResource(R.string.me)})"
+                        } else {
+                            l.creator.nickname
+                        },
                         fontSize = 22.sp,
                         color = colorResource(colorScheme.textColor),
                         fontWeight = FontWeight.W500
                     )
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = "<-=${stringResource(R.string.creator)}=->",
+                        fontSize = 22.sp,
+                        color = colorResource(colorScheme.textColor),
+                        fontWeight = FontWeight.W500
+                    )
+                }
+                l.guest?.let {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = if (isCreator == false) {
+                                "${it.nickname} (${stringResource(R.string.me)})"
+                            } else {
+                                it.nickname
+                            },
+                            fontSize = 22.sp,
+                            color = colorResource(colorScheme.textColor),
+                            fontWeight = FontWeight.W500
+                        )
+                        Spacer(Modifier.weight(1f))
+                        Text(
+                            text = "<-=${stringResource(R.string.guest)}=->",
+                            fontSize = 22.sp,
+                            color = colorResource(colorScheme.textColor),
+                            fontWeight = FontWeight.W500
+                        )
+                    }
                 }
             }
             Spacer(Modifier.height(56.dp))
@@ -124,8 +156,10 @@ fun LobbyScreen(
                         .fillMaxWidth()
                         .height(56.dp)
                         .background(colorResource(if (l.guest != null) R.color.purple_500 else colorScheme.cardBackgroundColor))
-                        .clickable {
-                            vm.startGame()
+                        .run{
+                            if (l.guest != null) this.clickable {
+                                vm.startGame()
+                            } else this
                         },
                     contentAlignment = Alignment.Center
                 ) {
@@ -167,7 +201,7 @@ fun LobbyScreen(
 
         } ?: 0.let{
             CircularProgressIndicator(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(40.dp).align(Alignment.CenterHorizontally),
             )
         }
     }

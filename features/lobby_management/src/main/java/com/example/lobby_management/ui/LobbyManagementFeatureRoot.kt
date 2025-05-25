@@ -32,7 +32,9 @@ fun LobbyManagementFeatureRoot(
     val navController = rememberNavController()
 
     LaunchedEffect(1) {
-        vm.onGameStarted = onGameStarted
+        vm.onGameStarted = {
+            onGameStarted(it)
+        }
         vm.initialize()
     }
 

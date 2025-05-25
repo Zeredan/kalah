@@ -11,6 +11,6 @@ interface LobbyRemoteRepository {
     suspend fun joinLobby(lobbyId: Int, user: User): Lobby?
     suspend fun createLobby(lobby: Lobby): Lobby?
     suspend fun startGame(lobbyId: Int)
-    suspend fun trackLobby(lobbyId: Int): Flow<Lobby>
+    suspend fun trackLobby(lobbyId: Int): Flow<Lobby?>
     suspend fun trackGameStart(lobbyId: Int): Flow<Boolean>
 }

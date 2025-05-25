@@ -26,15 +26,15 @@ class LobbyRemoteRepositoryImpl @Inject constructor(
         ktorService.startGame(lobbyId)
     }
 
-    override suspend fun trackLobby(lobbyId: Int): Flow<Lobby> {
+    override suspend fun trackLobby(lobbyId: Int): Flow<Lobby?> {
         return ktorService.trackLobby(lobbyId).map { lobbyDTO ->
-            Lobby(lobbyDTO)
+            lobbyDTO?.let{ Lobby(it) }
         }
     }
 
     override suspend fun trackGameStart(lobbyId: Int): Flow<Boolean> {
         return ktorService.trackGame(lobbyId).map { gameState ->
-            true
+            gameState != null
         }
     }
 }

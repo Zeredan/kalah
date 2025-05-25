@@ -10,8 +10,8 @@ import javax.inject.Inject
 class KalahGameRemoteRepositoryImpl @Inject constructor(
     private val ktorService: KtorService
 ) : KalahGameRemoteRepository {
-    override suspend fun trackGame(gameId: Int): Flow<KalahGameState> {
-        return ktorService.trackGame(gameId).map { KalahGameState(it) }
+    override suspend fun trackGame(gameId: Int): Flow<KalahGameState?> {
+        return ktorService.trackGame(gameId).map { it?.run{ KalahGameState(this) } }
     }
 
     override suspend fun makeMove(gameId: Int, nickname: String, holeIndex: Int) {

@@ -91,7 +91,7 @@ class LobbyManagementViewModel @Inject constructor(
                     }
                     viewModelScope.launch {
                         lobbyRepository.trackGameStart(lobbyId = lobby.id).collect {
-                            onGameStarted(lobby.id)
+                            if (it) onGameStarted(lobby.id)
                         }
                     }
                     true
@@ -126,7 +126,8 @@ class LobbyManagementViewModel @Inject constructor(
                     }
                     viewModelScope.launch {
                         lobbyRepository.trackGameStart(lobbyId = lobby.id).collect {
-                            onGameStarted(lobby.id)
+                            println("FFFGD: ${lobby.id}")
+                            if (it) onGameStarted(lobby.id)
                         }
                     }
                 }

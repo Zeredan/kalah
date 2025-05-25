@@ -29,7 +29,7 @@ class GameVsHumanViewModel @Inject constructor(
     val selectedGameTheme = settingsRepository.getGameThemeAsFlow()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    var gameId by mutableStateOf(0)
+    private var gameId by mutableStateOf(0)
     private var isInitialized = false
     val kalahGameState = MutableStateFlow<KalahGameState?>(null)
     

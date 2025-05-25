@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.flowOf
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.ktor.client.plugins.websocket.ws
 import io.ktor.client.statement.bodyAsText
 import javax.inject.Inject
 import kotlin.time.Duration
@@ -31,13 +32,14 @@ class KtorService @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val client: HttpClient
 ) {
-    val gson = Gson()
+    private val gson = Gson().apply{
+        this.serializeNulls()
+    }
     suspend fun getUserByCredentials(login: String, password: String) : UserDTO? {
-        Toast.makeText(appContext, "NETWORK: Getting user by credentials - login: $login", Toast.LENGTH_SHORT).show()
         println("NETWORK: Getting user by credentials - login: $login")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/users"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/users"
             ) {
                 method = HttpMethod.Get
                 parameter("login", login)
@@ -50,11 +52,10 @@ class KtorService @Inject constructor(
     }
 
     suspend fun getAllUsers() : List<UserDTO> {
-        Toast.makeText(appContext, "NETWORK: Getting all users", Toast.LENGTH_SHORT).show()
         println("NETWORK: Getting all users")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/users"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/users"
             ) {
                 method = HttpMethod.Get
             }.bodyAsText().let{gson.fromJson(it, object : TypeToken<List<UserDTO>>(){}.type)}
@@ -68,7 +69,7 @@ class KtorService @Inject constructor(
         println("NETWORK: Filtering users by name: $filter")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/users"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/users"
             ) {
                 method = HttpMethod.Get
                 parameter("filter", filter)
@@ -80,11 +81,10 @@ class KtorService @Inject constructor(
     }
 
     suspend fun createUser(login: String, password: String): Boolean {
-        Toast.makeText(appContext, "NETWORK: Creating user - login: $login", Toast.LENGTH_SHORT).show()
         println("NETWORK: Creating user - login: $login")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/users"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/users"
             ) {
                 method = HttpMethod.Post
                 parameter("login", login)
@@ -99,11 +99,10 @@ class KtorService @Inject constructor(
     }
 
     suspend fun updateUser(login: String, password: String, newUser: UserDTO): Boolean {
-        Toast.makeText(appContext, "NETWORK: Updating user - login: $login, newUser: $newUser", Toast.LENGTH_SHORT).show()
         println("NETWORK: Updating user - login: $login, newUser: $newUser")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/users"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/users"
             ) {
                 method = HttpMethod.Put
                 parameter("login", login)
@@ -119,11 +118,11 @@ class KtorService @Inject constructor(
     }
     
     suspend fun getAllLobbies() : List<LobbyDTO> {
-        Toast.makeText(appContext, "NETWORK: Getting all lobbies", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(appContext, "NETWORK: Getting all lobbies", Toast.LENGTH_SHORT).show()
         println("NETWORK: Getting all lobbies")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/lobbies"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/lobbies"
             ) {
                 method = HttpMethod.Get
             }.bodyAsText().let{gson.fromJson(it, object : TypeToken<List<LobbyDTO>>(){}.type)}
@@ -134,14 +133,13 @@ class KtorService @Inject constructor(
     }
 
     suspend fun createLobby(lobbyDTO: LobbyDTO): LobbyDTO? {
-        Toast.makeText(appContext, "NETWORK: Creating lobby: $lobbyDTO", Toast.LENGTH_SHORT).show()
         println("NETWORK: Creating lobby: $lobbyDTO")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/lobbies/create"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/lobbies/create"
             ) {
                 method = HttpMethod.Post
-                setBody(lobbyDTO)
+                setBody(gson.toJson(lobbyDTO).also{ println(it) })
             }.bodyAsText().let{gson.fromJson(it, LobbyDTO::class.java)}
         } catch (e: Exception) {
             println("NETWORK: Error creating lobby - ${e.message}")
@@ -150,14 +148,13 @@ class KtorService @Inject constructor(
     }
 
     suspend fun joinLobby(lobbyId: Int, userDTO: UserDTO): LobbyDTO? {
-        Toast.makeText(appContext, "NETWORK: Joining lobby id: $lobbyId with user: $userDTO", Toast.LENGTH_SHORT).show()
-        println("NETWORK: Joining lobby id: $lobbyId with user: $userDTO")
+        println("NETWORK: Joninig lobby")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/lobbies/$lobbyId/join"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/lobbies/$lobbyId/join"
             ) {
                 method = HttpMethod.Post
-                setBody(userDTO)
+                setBody(gson.toJson(userDTO).also{ println(it) })
             }.bodyAsText().let{gson.fromJson(it, LobbyDTO::class.java)}
         } catch (e: Exception) {
             println("NETWORK: Error joining lobby - ${e.message}")
@@ -165,22 +162,25 @@ class KtorService @Inject constructor(
         }
     }
 
-    suspend fun trackLobby(lobbyId: Int): Flow<LobbyDTO> {
-        Toast.makeText(appContext, "NETWORK: Starting to track lobby id: $lobbyId", Toast.LENGTH_SHORT).show()
+    suspend fun trackLobby(lobbyId: Int): Flow<LobbyDTO?> {
         println("NETWORK: Starting to track lobby id: $lobbyId")
         return try {
             val session: WebSocketSession = client.webSocketSession(
-                urlString = "${KtorNetworkSettings.networkingUrl}/lobbies/$lobbyId/track"
+                urlString = "ws://${KtorNetworkSettings.networkingUrl}/lobbies/$lobbyId/track".also{ println(it) }
             )
-            
             session.incoming.consumeAsFlow().map { frame ->
                 when (frame) {
                     is Frame.Text -> {
-                        val text = frame.readText()
-                        println("NETWORK: Received lobby update: $text")
-                        Gson().fromJson(text, LobbyDTO::class.java)
+                        try {
+                            val text = frame.readText()
+                            println("NETWORK: Received lobby update: $text")
+                            Gson().fromJson(text, LobbyDTO::class.java)
+                        } catch (e: Exception) {
+                            println("NETWORK: Error parsing lobby update - ${e.message}")
+                            null
+                        }
                     }
-                    else -> throw IllegalStateException("Unexpected frame type")
+                    else -> null
                 }
             }
         } catch (e: Exception) {
@@ -190,11 +190,10 @@ class KtorService @Inject constructor(
     }
     
     suspend fun startGame(lobbyId: Int): Boolean {
-        Toast.makeText(appContext, "NETWORK: Starting game for lobby id: $lobbyId", Toast.LENGTH_SHORT).show()
         println("NETWORK: Starting game for lobby id: $lobbyId")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/games/$lobbyId/start"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/games/$lobbyId/start"
             ) {
                 method = HttpMethod.Post
             }
@@ -206,36 +205,42 @@ class KtorService @Inject constructor(
         }
     }
 
-    suspend fun trackGame(lobbyId: Int): Flow<KalahGameStateDTO> {
-        Toast.makeText(appContext, "NETWORK: Starting to track game for lobby id: $lobbyId", Toast.LENGTH_SHORT).show()
+    suspend fun trackGame(lobbyId: Int): Flow<KalahGameStateDTO?> {
         println("NETWORK: Starting to track game for lobby id: $lobbyId")
         return try {
             val session: WebSocketSession = client.webSocketSession(
-                urlString = "${KtorNetworkSettings.networkingUrl}/games/$lobbyId/track"
+                urlString = "ws://${KtorNetworkSettings.networkingUrl}/games/$lobbyId/track"
             )
             
             session.incoming.consumeAsFlow().map { frame ->
                 when (frame) {
                     is Frame.Text -> {
-                        val text = frame.readText()
-                        println("NETWORK: Received game state update: $text")
-                        Gson().fromJson(text, KalahGameStateDTO::class.java)
+                        try {
+                            val text = frame.readText()
+                            println("NETWORK: Received game state update: $text")
+                            Gson().fromJson(text, KalahGameStateDTO::class.java)
+                        } catch (e: Exception) {
+                            println("NETWORK: Error parsing game state - ${e.message}")
+                            null
+                        }
                     }
-                    else -> throw IllegalStateException("Unexpected frame type")
+                    else -> {
+                        println("NETWORK: Unexpected frame type")
+                        null
+                    }
                 }
             }
         } catch (e: Exception) {
             println("NETWORK: Error tracking game - ${e.message}")
-            flowOf()
+            flowOf(null)
         }
     }
     
     suspend fun makeMove(lobbyId: Int, nickname: String, holeIndex: Int): Boolean {
-        Toast.makeText(appContext, "NETWORK: Making move - lobby: $lobbyId, user: $nickname, hole: $holeIndex", Toast.LENGTH_SHORT).show()
         println("NETWORK: Making move - lobby: $lobbyId, user: $nickname, hole: $holeIndex")
         return try {
             client.request(
-                urlString = "${KtorNetworkSettings.networkingUrl}/games/$lobbyId/move"
+                urlString = "http://${KtorNetworkSettings.networkingUrl}/games/$lobbyId/move"
             ) {
                 method = HttpMethod.Post
                 parameter("nickname", nickname)

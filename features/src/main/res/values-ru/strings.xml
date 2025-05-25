@@ -50,4 +50,6 @@
     <string name="name">Название</string>
     <string name="players">Игроки</string>
     <string name="me">Я</string>
+    <string name="creator">Создатель</string>
+    <string name="guest">Гость</string>
 </resources>
