@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
@@ -7,17 +7,14 @@ plugins {
 }
 
 android {
-    namespace = "com.example.kalah"
+    namespace = "com.example.terms_of_use"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.kalah"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -42,17 +39,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":features:play"))
-    implementation(project(":features:profile"))
-    implementation(project(":features:settings"))
-    implementation(project(":features:language"))
-    implementation(project(":features:game_vs_bot"))
-    implementation(project(":features:game_vs_human"))
-    implementation(project(":features:lobby_management"))
-    implementation(project(":features:about_developers"))
-    implementation(project(":features:"))
-    implementation(project(":data:settings"))
-    implementation(project(":data:networking_core"))
+    implementation(project(":features"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -61,8 +49,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,9 +57,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("androidx.navigation:navigation-compose:2.8.5")
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation("com.google.android.play:review:2.0.1")
+    implementation("com.google.android.play:review-ktx:2.0.1")
+    implementation("androidx.browser:browser:1.8.0")
 }

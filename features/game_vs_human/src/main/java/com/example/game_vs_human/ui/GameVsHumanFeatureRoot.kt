@@ -117,11 +117,11 @@ fun GameVsHumanFeatureRoot(
                     .fillMaxSize(),
                 painter = painterResource(
                     when (it) {
-                        GameTheme.SAND -> R.drawable.sand_background
-                        GameTheme.PIRATE -> R.drawable.pirate_background
-                        GameTheme.STARS -> R.drawable.stars_background
-                        GameTheme.KNIGHTS -> R.drawable.knight_background
-                        GameTheme.VIKINGS -> R.drawable.vikings_background
+                        GameTheme.WHITE_TREE -> R.drawable.sand_background
+                        GameTheme.CREAM_TREE -> R.drawable.pirate_background
+                        GameTheme.BLACK_TREE -> R.drawable.stars_background
+                        GameTheme.BROWN_TREE -> R.drawable.knight_background
+                        GameTheme.GINGER_TREE -> R.drawable.vikings_background
                         else -> R.drawable.pirate_background
                     }
                 ),
@@ -244,16 +244,26 @@ fun GameVsHumanFeatureRoot(
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
+                    val countHoles = kalahGameState?.holesCount ?: 0
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        kalahGameState?.player2Holes?.forEach {
+                        if (countHoles < 5) {
+                            Spacer(Modifier.weight(1f))
+                        }
+                        kalahGameState?.player2Holes?.forEachIndexed { ind, it ->
                             Box(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .aspectRatio(1f)
+                                    .run{
+                                        if (countHoles < 5) {
+                                            this.size(100.dp)
+                                        } else {
+                                            this.weight(1f)
+                                                .aspectRatio(1f)
+                                        }
+                                    }
                                     .clip(RoundedCornerShape(16.dp))
                                     .background(colorResource(colorScheme.holeBackgroundColor))
                                     .run {
@@ -274,6 +284,11 @@ fun GameVsHumanFeatureRoot(
                                     fontWeight = FontWeight.W600
                                 )
                             }
+                            if (countHoles < 5) {
+                                if (ind < countHoles) {
+                                    Spacer(Modifier.weight(1f))
+                                }
+                            }
                         }
                     }
                     Row(
@@ -281,11 +296,20 @@ fun GameVsHumanFeatureRoot(
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        if (countHoles < 5) {
+                            Spacer(Modifier.weight(1f))
+                        }
                         kalahGameState?.player1Holes?.forEachIndexed { ind, it ->
                             Box(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .aspectRatio(1f)
+                                    .run{
+                                        if (countHoles < 5) {
+                                            this.size(100.dp)
+                                        } else {
+                                            this.weight(1f)
+                                                .aspectRatio(1f)
+                                        }
+                                    }
                                     .clip(RoundedCornerShape(16.dp))
                                     .background(colorResource(colorScheme.holeBackgroundColor))
                                     .run {
@@ -307,6 +331,11 @@ fun GameVsHumanFeatureRoot(
                                     color = colorResource(colorScheme.textColor),
                                     fontWeight = FontWeight.W600
                                 )
+                            }
+                            if (countHoles < 5) {
+                                if (ind < countHoles) {
+                                    Spacer(Modifier.weight(1f))
+                                }
                             }
                         }
                     }

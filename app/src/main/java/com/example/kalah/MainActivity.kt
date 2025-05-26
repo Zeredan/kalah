@@ -44,7 +44,11 @@ class MainActivity : ComponentActivity() {
         super.attachBaseContext(newBase)
         lifecycleScope.launch {
             delay(1000)
-            initializeFlows()
+            newBase?.let { initializeFlows(it) }
+            repeat(10) {
+                delay(1000)
+                changeLanguage(settingsRepository.getSelectedLanguageAsFlow().first() ?: "en")
+            }
         }
     }
 
@@ -74,24 +78,35 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun initializeFlows() {
-        lifecycleScope.launch {
-            settingsRepository.getSelectedLanguageAsFlow()
-                .collect {
-                    val resultLocale = it ?: "en"
-                    println("ASDFS: $resultLocale | ${resources.configuration.locales[0] }")
-                    resources.apply {
-                        val locale = Locale(resultLocale)
-                        val config = Configuration(configuration)
+    fun changeLanguage(
+        language: String
+    ) {
+        println("language select required -> $language")
+        val locale = Locale(language)
+        Locale.setDefault(locale)
 
-                        createConfigurationContext(configuration)
-                        Locale.setDefault(locale)
-                        config.setLocale(locale)
-                        resources.updateConfiguration(config, displayMetrics)
-                    }
-                    it ?: settingsRepository.updateSelectedLanguage(resultLocale)
+        val config = Configuration(resources.configuration)
+        config.setLocale(locale)
+
+        // Create new context with the updated configuration and apply it
+        resources.updateConfiguration(config, resources.displayMetrics)
+
+        // Check if we need to recreate
+        val currentLocale = resources.configuration.locales[0]
+        if (currentLocale.language != language) {
+            //this@MainActivity.recreate()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun initializeFlows(context: Context) {
+        lifecycleScope.launch {
+            settingsRepository.getSelectedLanguageAsFlow().collect { language ->
+                if (language != null) {
+                    //changeLanguage("en", context)
+                    changeLanguage(language)
                 }
+            }
         }
         lifecycleScope.launch {
             settingsRepository.getDarkModeEnabledAsFlow().first() ?: let{

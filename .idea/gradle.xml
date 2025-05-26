@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/data/settings" />
             <option value="$PROJECT_DIR$/data/user" />
             <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/about_developers" />
             <option value="$PROJECT_DIR$/features/game_vs_bot" />
             <option value="$PROJECT_DIR$/features/game_vs_human" />
             <option value="$PROJECT_DIR$/features/language" />

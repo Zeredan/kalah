@@ -1,6 +1,5 @@
 package com.example.settings.ui
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,8 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -37,14 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,6 +58,8 @@ fun SettingsFeatureRoot(
     onLangClicked: () -> Unit,
     onNavigateToPlay: () -> Unit,
     onNavigateToProfile: () -> Unit,
+    onAboutDevsClicked: () -> Unit,
+    onAboutSystemClicked: () -> Unit
 ) {
     val colorScheme = if (isDarkMode) ColorScheme.DarkScheme else ColorScheme.LightScheme
     val iconScheme = if (isDarkMode) IconScheme.DarkScheme else IconScheme.LightScheme
@@ -231,10 +227,7 @@ fun SettingsFeatureRoot(
                 SettingCard(
                     isDarkMode = isDarkMode,
                     onClick = {
-                        vm.openCustomTab(
-                            uri = "https://i.pinimg.com/736x/ee/95/93/ee959316d6fac97573932e86b9c2c5ba.jpg",
-                            activityContext = context
-                        )
+                        onAboutDevsClicked()
                     }
                 ) {
                     Image(
@@ -244,7 +237,7 @@ fun SettingsFeatureRoot(
                         contentDescription = null
                     )
                     Text(
-                        text = stringResource(com.example.features.R.string.privacy_policy),
+                        text = stringResource(com.example.features.R.string.about_developers),
                         fontSize = 14.sp,
                         color = colorResource(colorScheme.textColor),
                         fontWeight = FontWeight.W600
@@ -258,7 +251,7 @@ fun SettingsFeatureRoot(
                 SettingCard(
                     isDarkMode = isDarkMode,
                     onClick = {
-                        vm.openGooglePlayForRating(context as ComponentActivity)
+                        onAboutSystemClicked()
                     }
                 ) {
                     Image(
@@ -268,7 +261,7 @@ fun SettingsFeatureRoot(
                         contentDescription = null
                     )
                     Text(
-                        text = stringResource(com.example.features.R.string.rate_us),
+                        text = stringResource(com.example.features.R.string.about_system),
                         fontSize = 14.sp,
                         color = colorResource(colorScheme.textColor),
                         fontWeight = FontWeight.W600
@@ -301,7 +294,14 @@ fun SettingsFeatureRoot(
                         )
                         Spacer(Modifier.weight(1f))
                         Text(
-                            text = selectedGameTheme,
+                            text = when(selectedGameTheme) {
+                                GameTheme.WHITE_TREE -> stringResource(com.example.features.R.string.white_tree_theme)
+                                GameTheme.CREAM_TREE -> stringResource(com.example.features.R.string.cream_tree_theme)
+                                GameTheme.BLACK_TREE -> stringResource(com.example.features.R.string.black_tree_theme)
+                                GameTheme.BROWN_TREE -> stringResource(com.example.features.R.string.brown_tree_theme)
+                                GameTheme.GINGER_TREE -> stringResource(com.example.features.R.string.ginger_tree_theme)
+                                else -> ""
+                            },
                             fontSize = 14.sp,
                             color = colorResource(com.example.features.R.color.orange),
                             fontWeight = FontWeight.W500
@@ -322,15 +322,15 @@ fun SettingsFeatureRoot(
                                 .verticalScroll(rememberScrollState())
                         ) {
                             listOf(
-                                GameTheme.SAND,
-                                GameTheme.PIRATE,
-                                GameTheme.STARS,
-                                GameTheme.KNIGHTS,
-                                GameTheme.VIKINGS
+                                GameTheme.WHITE_TREE,
+                                GameTheme.CREAM_TREE,
+                                GameTheme.BLACK_TREE,
+                                GameTheme.BROWN_TREE,
+                                GameTheme.GINGER_TREE
                             ).forEach { theme ->
                                 Row(
                                     modifier = Modifier
-                                        .padding(5.dp)
+                                        .padding(10.dp)
                                         .clip(RoundedCornerShape(16.dp))
                                         .fillMaxWidth()
                                         .height(56.dp)
@@ -343,7 +343,14 @@ fun SettingsFeatureRoot(
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        text = theme,
+                                        text = when(theme) {
+                                            GameTheme.WHITE_TREE -> stringResource(com.example.features.R.string.white_tree_theme)
+                                            GameTheme.CREAM_TREE -> stringResource(com.example.features.R.string.cream_tree_theme)
+                                            GameTheme.BLACK_TREE -> stringResource(com.example.features.R.string.black_tree_theme)
+                                            GameTheme.BROWN_TREE -> stringResource(com.example.features.R.string.brown_tree_theme)
+                                            GameTheme.GINGER_TREE -> stringResource(com.example.features.R.string.ginger_tree_theme)
+                                            else -> ""
+                                        },
                                         fontSize = 16.sp,
                                         color = colorResource(com.example.features.R.color.orange),
                                         fontWeight = FontWeight.W600

@@ -9,4 +9,6 @@ object ScreenState {
     const val GAME_VS_BOT = "game_vs_bot"
     const val GAME_VS_HUMAN = "game_vs_human"
     const val LOBBY_MANAGEMENT = "lobby_management"
+    const val ABOUT_SYSTEM = "about_system"
+    const val ABOUT_DEVELOPERS = "for_developers"
 }

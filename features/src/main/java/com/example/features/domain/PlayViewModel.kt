@@ -36,7 +36,7 @@ open class PlayViewModel @Inject constructor(
 
     fun updateStoneCount(newCount: Int) {
         viewModelScope.launch {
-            if (newCount in 1..10) {
+            if (newCount in 3..10) {
                 _stoneCount.emit(newCount)
             }
         }

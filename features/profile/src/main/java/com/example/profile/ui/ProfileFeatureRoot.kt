@@ -44,7 +44,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -106,6 +110,12 @@ fun ProfileFeatureRoot(
             } else {
                 val login by vm.registerLogin.collectAsState()
                 val password by vm.registerPassword.collectAsState()
+                val isLoginValid = remember(login) {
+                    login.isNotEmpty() && login.length in 5..20
+                }
+                val isPasswordValid = remember(password) {
+                    password.isNotEmpty() && password.length in 5..20
+                }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -216,6 +226,17 @@ fun ProfileFeatureRoot(
                                     .padding(horizontal = 16.dp)
                                     .fillMaxWidth(),
                                 value = login,
+                                isError = !isLoginValid,
+                                supportingText = {
+                                    if (!isLoginValid) {
+                                        Text(
+                                            text = stringResource(com.example.features.R.string.login_error),
+                                            fontSize = 18.sp,
+                                            color = colorResource(com.example.features.R.color.red),
+                                            fontWeight = FontWeight.W600,
+                                        )
+                                    }
+                                },
                                 onValueChange = {
                                     if (!it.contains('\n')) vm.updateRegisterLogin(it)
                                 },
@@ -231,10 +252,15 @@ fun ProfileFeatureRoot(
                                 colors = TextFieldDefaults.colors(
                                     focusedTextColor = colorResource(colorScheme.textColor),
                                     unfocusedTextColor = colorResource(colorScheme.textColor),
+                                    errorTextColor = colorResource(colorScheme.textColor),
+
                                     focusedContainerColor = colorResource(colorScheme.backgroundColor),
                                     unfocusedContainerColor = colorResource(colorScheme.backgroundColor),
+                                    errorContainerColor = colorResource(colorScheme.backgroundColor),
+
                                     focusedLabelColor = Color.Transparent,
-                                    unfocusedLabelColor = Color.Transparent
+                                    unfocusedLabelColor = Color.Transparent,
+                                    errorLabelColor = Color.Transparent,
                                 )
                             )
                         }
@@ -244,6 +270,23 @@ fun ProfileFeatureRoot(
                                     .padding(horizontal = 16.dp)
                                     .fillMaxWidth(),
                                 value = password,
+                                isError = !isPasswordValid,
+                                supportingText = {
+                                    if (!isPasswordValid) {
+                                        Text(
+                                            text = stringResource(com.example.features.R.string.password_error),
+                                            fontSize = 18.sp,
+                                            color = colorResource(com.example.features.R.color.red),
+                                            fontWeight = FontWeight.W600,
+                                        )
+                                    }
+                                },
+                                visualTransformation = { text ->
+                                    TransformedText(
+                                        AnnotatedString("*".repeat(text.text.length)),
+                                        OffsetMapping.Identity
+                                    )
+                                },
                                 onValueChange = {
                                     if (!it.contains('\n')) vm.updateRegisterPassword(it)
                                 },
@@ -259,15 +302,20 @@ fun ProfileFeatureRoot(
                                 colors = TextFieldDefaults.colors(
                                     focusedTextColor = colorResource(colorScheme.textColor),
                                     unfocusedTextColor = colorResource(colorScheme.textColor),
+                                    errorTextColor = colorResource(colorScheme.textColor),
+
                                     focusedContainerColor = colorResource(colorScheme.backgroundColor),
                                     unfocusedContainerColor = colorResource(colorScheme.backgroundColor),
+                                    errorContainerColor = colorResource(colorScheme.backgroundColor),
+
                                     focusedLabelColor = Color.Transparent,
-                                    unfocusedLabelColor = Color.Transparent
+                                    unfocusedLabelColor = Color.Transparent,
+                                    errorLabelColor = Color.Transparent,
                                 )
                             )
                         }
                         item {
-                            val isActive = login.isNotBlank() && password.isNotBlank()
+                            val isActive = login.isNotBlank() && password.isNotBlank() && isLoginValid && isPasswordValid
                             Box(
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)

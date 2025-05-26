@@ -1,9 +1,9 @@
 package com.example.settings.model
 
 object GameTheme {
-    const val SAND = "Sand"
-    const val PIRATE = "Pirate"
-    const val STARS = "Stars"
-    const val VIKINGS = "Vikings"
-    const val KNIGHTS = "Knights"
+    const val WHITE_TREE = "white_tree"
+    const val CREAM_TREE = "cream_tree"
+    const val BLACK_TREE = "black_tree"
+    const val GINGER_TREE = "ginger_tree"
+    const val BROWN_TREE = "brown_tree"
 }

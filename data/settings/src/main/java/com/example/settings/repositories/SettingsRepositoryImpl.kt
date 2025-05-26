@@ -57,7 +57,7 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override fun getGameThemeAsFlow(): Flow<String> {
         return dataStore.data.map{
-            it[GAME_THEME_KEY] ?: GameTheme.SAND
+            it[GAME_THEME_KEY] ?: GameTheme.WHITE_TREE
         }
     }
 

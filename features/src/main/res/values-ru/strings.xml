@@ -14,6 +14,8 @@
     <string name="log_out">Выйти</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
+    <string name="login_error">Длина логина должна быть от 5 до 20 символов</string>
+    <string name="password_error">Длина пароля должна быть от 5 до 20 символов</string>
 
     <string name="language">Выбери язык</string>
 
@@ -52,4 +54,13 @@
     <string name="me">Я</string>
     <string name="creator">Создатель</string>
     <string name="guest">Гость</string>
+
+    <string name="about_developers">О разработчиках</string>
+    <string name="about_system">О системе</string>
+
+    <string name="white_tree_theme">Белое Дерево</string>
+    <string name="cream_tree_theme">Кремовое Дерево</string>
+    <string name="black_tree_theme">Чёрное Дерево</string>
+    <string name="brown_tree_theme">Коричневое Дерево</string>
+    <string name="ginger_tree_theme">Рыжее Дерево</string>
 </resources>
